@@ -1,4 +1,5 @@
-import pkg_resources
+import os
+from pkg_resources import get_distribution, DistributionNotFound
 
 from .prettytable import (
     ALL,
@@ -40,4 +41,15 @@ __all__ = [
     "from_json",
 ]
 
-__version__ = pkg_resources.get_distribution(__name__).version
+
+try:
+    _dist = get_distribution('prettytable')
+    dist_loc = os.path.normcase(_dist.location)
+    here = os.path.normcase(__file__)
+    if not here.startswith(os.path.join(dist_loc, 'prettytable')):
+        raise DistributionNotFound
+except DistributionNotFound:
+    __version__ = 'Please install this project with setup.py'
+else:
+    __version__ = _dist.version
+
